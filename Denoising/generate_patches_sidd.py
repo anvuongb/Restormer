@@ -9,13 +9,13 @@ from pdb import set_trace as stx
 
 
 # src = 'Datasets/Downloads/SIDD'
-split = "train"
+split = "test"
 tar = f'/home/anvuong/datasets/celeba_prepared/mpr/{split}'
 
-lr_tar = os.path.join(tar, 'input_crops')
-hr_tar_t100 = os.path.join(tar, 'target_crops_t100')
-hr_tar_t200 = os.path.join(tar, 'target_crops_t200')
-hr_tar_t300 = os.path.join(tar, 'target_crops_t300')
+lr_tar = os.path.join(tar, 'target_crops')
+hr_tar_t100 = os.path.join(tar, 'input_crops_t100')
+hr_tar_t200 = os.path.join(tar, 'input_crops_t200')
+hr_tar_t300 = os.path.join(tar, 'input_crops_t300')
 
 os.makedirs(lr_tar, exist_ok=True)
 os.makedirs(hr_tar_t100, exist_ok=True)
@@ -36,10 +36,16 @@ clean_path = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_clean"
 noise_path_t100 = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_noisy_t100"
 noise_path_t200 = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_noisy_t200"
 noise_path_t300 = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_noisy_t300"
-lr_files = [os.path.join(clean_path, str(i) + ".png") for i in range(100000)]
-hr_files_t100 = [os.path.join(noise_path_t100, str(i) + ".png") for i in range(100000)]
-hr_files_t200 = [os.path.join(noise_path_t200, str(i) + ".png") for i in range(100000)]
-hr_files_t300 = [os.path.join(noise_path_t300, str(i) + ".png") for i in range(100000)]
+if split == "train":
+    lr_files = [os.path.join(clean_path, str(i) + ".png") for i in range(100000)]
+    hr_files_t100 = [os.path.join(noise_path_t100, str(i) + ".png") for i in range(100000)]
+    hr_files_t200 = [os.path.join(noise_path_t200, str(i) + ".png") for i in range(100000)]
+    hr_files_t300 = [os.path.join(noise_path_t300, str(i) + ".png") for i in range(100000)]
+else:
+    lr_files = [os.path.join(clean_path, str(i) + ".png") for i in range(2095)]
+    hr_files_t100 = [os.path.join(noise_path_t100, str(i) + ".png") for i in range(2095)]
+    hr_files_t200 = [os.path.join(noise_path_t200, str(i) + ".png") for i in range(2095)]
+    hr_files_t300 = [os.path.join(noise_path_t300, str(i) + ".png") for i in range(2095)]
 
 files = [(i, j, k, z) for i, j, k, z in zip(lr_files, hr_files_t100, hr_files_t200, hr_files_t300)]
 
