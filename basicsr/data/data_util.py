@@ -2,6 +2,7 @@ import cv2
 cv2.setNumThreads(1)
 import numpy as np
 import torch
+import tqdm
 from os import path as osp
 from torch.nn import functional as F
 
@@ -235,7 +236,7 @@ def paired_paths_from_folder(folders, keys, filename_tmpl):
         f'{input_key} and {gt_key} datasets have different number of images: '
         f'{len(input_paths)}, {len(gt_paths)}.')
     paths = []
-    for idx in range(len(gt_paths)):
+    for idx in tqdm.tqdm(range(len(gt_paths))):
         gt_path = gt_paths[idx]
         basename, ext = osp.splitext(osp.basename(gt_path))
         input_path = input_paths[idx]

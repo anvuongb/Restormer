@@ -82,11 +82,14 @@ def create_train_val_dataloader(opt, logger):
     # create train and val dataloaders
     train_loader, val_loader = None, None
     for phase, dataset_opt in opt['datasets'].items():
+        logger.info("Generating datasets")
         if phase == 'train':
             dataset_enlarge_ratio = dataset_opt.get('dataset_enlarge_ratio', 1)
             train_set = create_dataset(dataset_opt)
+            # logger.info("Created train_set")
             train_sampler = EnlargedSampler(train_set, opt['world_size'],
                                             opt['rank'], dataset_enlarge_ratio)
+            # logger.info("Created train_sampler")
             train_loader = create_dataloader(
                 train_set,
                 dataset_opt,
@@ -94,7 +97,7 @@ def create_train_val_dataloader(opt, logger):
                 dist=opt['dist'],
                 sampler=train_sampler,
                 seed=opt['manual_seed'])
-
+            # logger.info("Created train_loader")
             num_iter_per_epoch = math.ceil(
                 len(train_set) * dataset_enlarge_ratio /
                 (dataset_opt['batch_size_per_gpu'] * opt['world_size']))
