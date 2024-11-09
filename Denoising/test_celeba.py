@@ -93,42 +93,43 @@ class TestDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.img_paths)
 
-batch_size = 4
-noise_level = 100
-weights_path = f"../experiments/RealDenoising_Restormer_t{noise_level}/models/net_g_latest.pth"
-config_file = f"./Options/RealDenoising_Restormer_t{noise_level}.yml"
-opt = yaml.load(open(config_file, mode='r'), Loader=Loader)
+if __name__ == "__main__":
+    batch_size = 4
+    noise_level = 100
+    weights_path = f"../experiments/RealDenoising_Restormer_t{noise_level}/models/net_g_latest.pth"
+    config_file = f"./Options/RealDenoising_Restormer_t{noise_level}.yml"
+    opt = yaml.load(open(config_file, mode='r'), Loader=Loader)
 
-input_dir = f"/media/anvuong/Shared/datasets/celeba_prepared/img_celeba_test_noisy_t{noise_level}"
-img_paths = os.listdir(input_dir)
-img_paths = [os.path.join(input_dir, f"{idx}.png") for idx in range(2096)] # there are 2096 images in test set, in that order
+    input_dir = f"/media/anvuong/Shared/datasets/celeba_prepared/img_celeba_test_noisy_t{noise_level}"
+    img_paths = os.listdir(input_dir)
+    img_paths = [os.path.join(input_dir, f"{idx}.png") for idx in range(2096)] # there are 2096 images in test set, in that order
 
-output_dir = f"./results/celeba/t{noise_level}"
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+    output_dir = f"./results/celeba/t{noise_level}"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
-# load dataset
-dataset = TestDataset(img_paths)
-dataloader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=4)
-s = opt['network_g'].pop('type')
+    # load dataset
+    dataset = TestDataset(img_paths)
+    dataloader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+    s = opt['network_g'].pop('type')
 
-##########################
-model_restoration = Restormer(**opt['network_g'])
+    ##########################
+    model_restoration = Restormer(**opt['network_g'])
 
-checkpoint = torch.load(weights_path)
-model_restoration.load_state_dict(checkpoint['params'])
-print("===>Testing using weights: ",weights_path)
-model_restoration.cuda()
-model_restoration = nn.DataParallel(model_restoration)
-model_restoration.eval()
+    checkpoint = torch.load(weights_path)
+    model_restoration.load_state_dict(checkpoint['params'])
+    print("===>Testing using weights: ",weights_path)
+    model_restoration.cuda()
+    model_restoration = nn.DataParallel(model_restoration)
+    model_restoration.eval()
 
-idx = 0
-with torch.no_grad():
-    for noisy_batch in tqdm(dataloader) :
-        restored_patch = model_restoration(noisy_batch)
-        #for img in noisy_batch:
-        #    torchvision.utils.save_image(img, os.path.join(output_dir, f"{idx}_noisy.png"))
-        #    idx += 1
-        for img in restored_patch:
-            torchvision.utils.save_image(img, os.path.join(output_dir, f"{idx}.png"))
-            idx += 1
+    idx = 0
+    with torch.no_grad():
+        for noisy_batch in tqdm(dataloader) :
+            restored_patch = model_restoration(noisy_batch)
+            #for img in noisy_batch:
+            #    torchvision.utils.save_image(img, os.path.join(output_dir, f"{idx}_noisy.png"))
+            #    idx += 1
+            for img in restored_patch:
+                torchvision.utils.save_image(img, os.path.join(output_dir, f"{idx}.png"))
+                idx += 1
