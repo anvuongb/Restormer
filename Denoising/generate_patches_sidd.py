@@ -9,8 +9,8 @@ from pdb import set_trace as stx
 
 
 # src = 'Datasets/Downloads/SIDD'
-split = "test"
-tar = f'/home/anvuong/datasets/celeba_prepared/mpr/{split}'
+split = "train"
+tar = f'/nfs/stak/users/vuonga2/datasets/celeba_prepared/mpr/{split}'
 
 lr_tar = os.path.join(tar, 'target_crops')
 hr_tar_t100 = os.path.join(tar, 'input_crops_t100')
@@ -32,10 +32,10 @@ os.makedirs(hr_tar_t300, exist_ok=True)
 #     if 'NOISY' in filename:
 #         lr_files.append(file_)
 
-clean_path = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_clean"
-noise_path_t100 = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_noisy_t100"
-noise_path_t200 = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_noisy_t200"
-noise_path_t300 = f"/home/anvuong/datasets/celeba_prepared/img_celeba_{split}_noisy_t300"
+clean_path = f"/nfs/stak/users/vuonga2/datasets/celeba_prepared/img_celeba_{split}_clean"
+noise_path_t100 = f"/nfs/stak/users/vuonga2/datasets/celeba_prepared/img_celeba_{split}_noisy_t100"
+noise_path_t200 = f"/nfs/stak/users/vuonga2/datasets/celeba_prepared/img_celeba_{split}_noisy_t200"
+noise_path_t300 = f"/nfs/stak/users/vuonga2/datasets/celeba_prepared/img_celeba_{split}_noisy_t300"
 if split == "train":
     lr_files = [os.path.join(clean_path, str(i) + ".png") for i in range(100000)]
     hr_files_t100 = [os.path.join(noise_path_t100, str(i) + ".png") for i in range(100000)]
