@@ -94,13 +94,18 @@ class TestDataset(torch.utils.data.Dataset):
         return len(self.img_paths)
 
 if __name__ == "__main__":
-    batch_size = 4
-    noise_level = 100
-    weights_path = f"../experiments/RealDenoising_Restormer_t{noise_level}/models/net_g_latest.pth"
+    batch_size = 16
+    noise_level = 200
+    weights_dict = {
+        100: 300000,
+        200: 300000,
+        300: 300000
+    }
+    weights_path = f"../experiments/RealDenoising_Restormer_t{noise_level}/models/net_g_{weights_dict[noise_level]}.pth"
     config_file = f"./Options/RealDenoising_Restormer_t{noise_level}.yml"
     opt = yaml.load(open(config_file, mode='r'), Loader=Loader)
 
-    input_dir = f"/media/anvuong/Shared/datasets/celeba_prepared/img_celeba_test_noisy_t{noise_level}"
+    input_dir = f"/nfs/stak/users/vuonga2/datasets/celeba_prepared/img_celeba_test_noisy_t{noise_level}"
     img_paths = os.listdir(input_dir)
     img_paths = [os.path.join(input_dir, f"{idx}.png") for idx in range(2096)] # there are 2096 images in test set, in that order
 
